@@ -16,7 +16,7 @@ export function HomeScreen() {
   useEffect(() => {
     const fetchQuestionCount = async () => {
       try {
-        const response = await fetch('/api/questions/count');
+        const response = await fetch('http://localhost:3000/api/questions/count');
         if (!response.ok) throw new Error('Failed to fetch question count');
         const data = await response.json();
         setMaxQuestions(Math.min(data.total, 50)); // Cap at 50 for demo

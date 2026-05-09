@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShuffledQuestion } from '@/lib/types';
+import { shuffleMultipleQuestions } from '@/lib/utils';
 import { QuestionCard } from './QuestionCard';
 import { ResultScreen } from '@/components/results/ResultScreen';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
@@ -24,10 +25,12 @@ export function ExamScreen({ amount }: ExamScreenProps) {
     const fetchQuestions = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/exam?amount=${amount}`);
+        const response = await fetch(`http://localhost:3000/api/exam?amount=${amount}`);
         if (!response.ok) throw new Error('Failed to fetch questions');
         const data = await response.json();
-        setQuestions(data.questions);
+        // Shuffle all questions - options[0] in API is always correct
+        const shuffled = shuffleMultipleQuestions(data.questions);
+        setQuestions(shuffled);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
@@ -66,10 +69,12 @@ export function ExamScreen({ amount }: ExamScreenProps) {
     // Refetch questions
     const fetchQuestions = async () => {
       try {
-        const response = await fetch(`/api/exam?amount=${amount}`);
+        const response = await fetch(`http://localhost:3000/api/exam?amount=${amount}`);
         if (!response.ok) throw new Error('Failed to fetch questions');
         const data = await response.json();
-        setQuestions(data.questions);
+        // Shuffle all questions - options[0] in API is always correct
+        const shuffled = shuffleMultipleQuestions(data.questions);
+        setQuestions(shuffled);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
